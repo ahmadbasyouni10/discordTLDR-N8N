@@ -48,16 +48,17 @@ async def summarize(interaction: discord.Interaction, limit: int = 75):
         "msgs": msgs
     }
 
+
     # POST to n8n webhook
     async with aiohttp.ClientSession() as session:
         async with session.post(N8N_WEBHOOK_URL, json=payload) as resp:
-            summary = await resp.text()
+            summary = (await resp.text()).strip()
     
-    if not summary.strip():
+    if not summary:
         summary = "No messages to summarize"
 
     # Send the response back in chat
     # Discord limit is 2000 chars 
-    await interaction.followup.send(content=summary[:2000]) 
+    await interaction.followup.send(content=summary[:1990])
 
 bot.run(TOKEN)
